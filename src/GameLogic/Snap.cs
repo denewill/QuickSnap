@@ -5,7 +5,6 @@ using SwinGameSDK;
 using NUnit.Framework;
 #endif 
 
-
 namespace CardGames.GameLogic
 {
 	/// <summary>
@@ -34,9 +33,10 @@ namespace CardGames.GameLogic
 		/// <summary>
 		/// Create a new game of Snap!
 		/// </summary>
-		public Snap ()
+		public Snap()
 		{
-			_deck = new Deck ();
+			_deck = new Deck();
+            _gameTimer = SwinGame.CreateTimer();
 		}
 
 		/// <summary>
@@ -92,6 +92,7 @@ namespace CardGames.GameLogic
 				_deck.Shuffle ();		// Return the cards and shuffle
 
 				FlipNextCard ();		// Flip the first card...
+                _gameTimer.Start();     // Start the game timer
 			}
 		}
 			
@@ -111,7 +112,12 @@ namespace CardGames.GameLogic
 		/// </summary>
 		public void Update()
 		{
-			//TODO: implement update to automatically slip cards!
+            //Flips 1 card each second
+            if (_gameTimer.Ticks > _flipTime)
+            {
+                _gameTimer.Reset();
+                FlipNextCard();
+            }
 		}
 
 		/// <summary>
@@ -143,6 +149,7 @@ namespace CardGames.GameLogic
 
 			// stop the game...
 			_started = false;
+            _gameTimer.Stop();
 		}
 	
 		#region Snap Game Unit Tests
